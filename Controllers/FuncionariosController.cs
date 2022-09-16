@@ -21,9 +21,8 @@ namespace ProjetoSalao.Controllers
         // GET: Funcionarios
         public async Task<IActionResult> Index()
         {
-              return _context.Funcionarios != null ? 
-                          View(await _context.Funcionarios.ToListAsync()) :
-                          Problem("Entity set 'ProjetoSalaoContext.Funcionarios'  is null.");
+            var projetoSalaoContext = _context.Funcionarios.Include(f => f.Setor);
+            return View(await projetoSalaoContext.ToListAsync());
         }
 
         // GET: Funcionarios/Details/5
@@ -35,6 +34,7 @@ namespace ProjetoSalao.Controllers
             }
 
             var funcionario = await _context.Funcionarios
+                .Include(f => f.Setor)
                 .FirstOrDefaultAsync(m => m.FuncionarioId == id);
             if (funcionario == null)
             {
@@ -47,6 +47,7 @@ namespace ProjetoSalao.Controllers
         // GET: Funcionarios/Create
         public IActionResult Create()
         {
+            ViewData["SetorId"] = new SelectList(_context.Setores, "SetorId", "SetorId");
             return View();
         }
 
@@ -55,7 +56,7 @@ namespace ProjetoSalao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FuncionarioId,Nome,Funcao,Matricula,TemCNH,Salario")] Funcionario funcionario)
+        public async Task<IActionResult> Create([Bind("FuncionarioId,Nome,Funcao,Matricula,TemCNH,Salario,SetorId")] Funcionario funcionario)
         {
             if (ModelState.IsValid)
             {
@@ -63,6 +64,7 @@ namespace ProjetoSalao.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["SetorId"] = new SelectList(_context.Setores, "SetorId", "SetorId", funcionario.SetorId);
             return View(funcionario);
         }
 
@@ -79,6 +81,7 @@ namespace ProjetoSalao.Controllers
             {
                 return NotFound();
             }
+            ViewData["SetorId"] = new SelectList(_context.Setores, "SetorId", "SetorId", funcionario.SetorId);
             return View(funcionario);
         }
 
@@ -87,7 +90,7 @@ namespace ProjetoSalao.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FuncionarioId,Nome,Funcao,Matricula,TemCNH,Salario")] Funcionario funcionario)
+        public async Task<IActionResult> Edit(int id, [Bind("FuncionarioId,Nome,Funcao,Matricula,TemCNH,Salario,SetorId")] Funcionario funcionario)
         {
             if (id != funcionario.FuncionarioId)
             {
@@ -114,6 +117,7 @@ namespace ProjetoSalao.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["SetorId"] = new SelectList(_context.Setores, "SetorId", "SetorId", funcionario.SetorId);
             return View(funcionario);
         }
 
@@ -126,6 +130,7 @@ namespace ProjetoSalao.Controllers
             }
 
             var funcionario = await _context.Funcionarios
+                .Include(f => f.Setor)
                 .FirstOrDefaultAsync(m => m.FuncionarioId == id);
             if (funcionario == null)
             {

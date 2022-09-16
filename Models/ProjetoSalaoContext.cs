@@ -11,5 +11,6 @@ namespace ProjetoSalao.Models
         public ProjetoSalaoContext(DbContextOptions<ProjetoSalaoContext> options):base(options){}
 
         public DbSet<Funcionario> Funcionarios { get; set; }
+        public DbSet<Setor> Setores { get; set; }
     }
 }

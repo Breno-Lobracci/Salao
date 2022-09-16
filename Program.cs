@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjetoSalao.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 string mysqlConnection = builder.Configuration.GetConnectionString("MySqlConnection");
